@@ -14,9 +14,15 @@ npm install --save bbcode-to-react react
 Import `bbcode-to-react`, example:
 
 ```js
-import { Parser } from 'bbcode-to-react';
+import React from 'react';
+import parser from 'bbcode-to-react';
 
-const react = parser.toReact('[b]strong[/b]');
+const Example = (props) => {
+  return (
+    <p>{parser.toReact('[b]strong[/b]')}</p>
+  );
+}
+
 ```
 
 
