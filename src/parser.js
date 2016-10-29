@@ -29,6 +29,16 @@ export default class Parser {
   parseParams(token) {
     const params = [];
 
+    function addParam(name, value) {
+      if (name) {
+        const n = name.trim();
+        // ignore on* events attribute
+        if (n.length && n.toLowerCase().indexOf('on') !== 0) {
+          params.push([n, value]);
+        }
+      }
+    }
+
     if (token) {
       let key = [];
       let target = key;
@@ -48,7 +58,7 @@ export default class Parser {
         } else if (c !== terminate) {
           target.push(c);
         } else {
-          params.push([key.join('').toLowerCase(), value.join('')]);
+          addParam(key.join(''), value.join(''));
 
           if (!SPACE_RE.test(terminate)) {
             skipNext = true;
@@ -60,7 +70,7 @@ export default class Parser {
         }
       });
 
-      params.push([key.join('').toLowerCase(), value.join('')]);
+      addParam(key.join(''), value.join(''));
     }
 
     return params;

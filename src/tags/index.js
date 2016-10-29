@@ -42,4 +42,5 @@ export default {
   quote: QuoteTag,
   url: LinkTag,
   link: LinkTag,
+  email: LinkTag,
 };

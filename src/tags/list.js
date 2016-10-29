@@ -32,15 +32,19 @@ export default class ListTag extends Tag {
   toReact() {
     const listType = this.params.list;
 
-    if (listType === '1') {
-      return <ol>{this.getComponents()}</ol>;
+    const listTypes = {
+      a: 'lower-alpha',
+      A: 'upper-alpha',
+      i: 'lower-roman',
+      I: 'upper-roman',
+      '1': 'decimal',
     }
 
-    if (listType && listType.toLowerCase() === 'a') {
+    if (listTypes[listType]) {
       return (
         <ol
           style={{
-            listStyleType: listType === 'a' ? 'lower-alpha' : 'upper-alpha',
+            listStyleType: listTypes[listType],
           }}
         >
           {this.getComponents()}
