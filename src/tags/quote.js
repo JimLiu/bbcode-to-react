@@ -30,8 +30,8 @@ export default class QuoteTag extends Tag {
     const citation = this.params.quote;
     return (
       <blockquote>
+        {citation && <small>{citation} wrote:</small>}
         {this.getComponents()}
-        {citation && <small>{citation}</small>}
       </blockquote>
     );
   }

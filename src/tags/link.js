@@ -30,6 +30,10 @@ export default class LinkTag extends Tag {
       return this.getComponents();
     }
 
+    if (this.name === 'email') {
+      url = `mailto:${url}`;
+    }
+
     return (
       <a href={url} target="_blank" rel="noopener noreferrer">
         {this.getComponents()}
