@@ -11,4 +11,12 @@ describe('[quote]', () => {
     expect(wrapper.text()).toBe('quote');
     expect(wrapper.type()).toBe('blockquote');
   });
+
+  it('should parse quote with author', () => {
+    const bbcode = '[quote="Mr. Blobby"]The text Mr. Blobby wrote would go here[/quote]';
+    const wrapper = shallow(<div>{parser.toReact(bbcode)}</div>).children().first();
+
+    expect(wrapper.text()).toBe('Mr. Blobby wrote:The text Mr. Blobby wrote would go here');
+    expect(wrapper.type()).toBe('blockquote');
+  });
 });

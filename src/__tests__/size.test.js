@@ -11,4 +11,5 @@ describe('[size]', () => {
     expect(wrapper.text()).toBe('size5');
     expect(wrapper.prop('style').fontSize).toBe('5px');
   });
+
 });
