@@ -97,4 +97,8 @@ npm run test-watch
 
 # Credits
 
-`bbcode-to-react` uses the parser from [bbcodejs](https://github.com/vishnevskiy/bbcodejs), so much of the credit is due there.
+* **bbcodejs:** `bbcode-to-react` uses the parser from [bbcodejs](https://github.com/vishnevskiy/bbcodejs), so much of the credit is due there.
+* **reactstrap:** `bbcode-to-react` uses the webpack config and publish scripts from [reactstrap](https://github.com/reactstrap/reactstrap).
+
+
+
