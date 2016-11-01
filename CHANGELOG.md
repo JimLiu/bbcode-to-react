@@ -1,6 +1,6 @@
 <a name="0.2.4"></a>
 ## [0.2.4](https://github.com/JimLiu/bbcode-to-react/compare/0.2.3...v0.2.4) (2016-11-01)
-
+Fixed issue that can't be required by ES5.
 
 
 <a name="0.2.3"></a>
