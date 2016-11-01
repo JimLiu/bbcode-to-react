@@ -1,12 +1,13 @@
-import React from 'react';
-import parser from 'bbcode-to-react';
-import { renderToString } from 'react-dom/server';
+var React = require('react');
+var ReactDOMServer = require('react-dom/server');
+var bbcode = require('bbcode-to-react');
 
-const Example = (props) => {
-  return (
-    <p>{parser.toReact('[b]strong[/b]')}</p>
-  );
+class MyComponent extends React.Component {
+  render() {
+    console.log(bbcode.default);
+    return <p>{bbcode.default.toReact('[b]strong[/b]')}</p>;
+  }
 }
 
 // render: <p><strong>strong</strong></p>
-console.log(renderToString(<Example />));
+ReactDOMServer.renderToString(<MyComponent />);
