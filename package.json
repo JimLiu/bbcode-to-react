@@ -23,7 +23,8 @@
     "README.md",
     "CHANGELOG.md",
     "lib",
-    "dist"
+    "dist",
+    "tonic-example.js"
   ],
   "keywords": [
     "bbcode",
@@ -37,6 +38,7 @@
   "bugs": {
     "url": "https://github.com/JimLiu/bbcode-to-react/issues"
   },
+  "tonicExampleFilename": "tonic-example.js",
   "homepage": "https://github.com/JimLiu/bbcode-to-react#readme",
   "dependencies": {},
   "peerDependencies": {
