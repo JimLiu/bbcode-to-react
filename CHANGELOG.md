@@ -1,3 +1,8 @@
+<a name="0.2.3"></a>
+## [0.2.3](https://github.com/JimLiu/bbcode-to-react/compare/0.2.2...v0.2.3) (2016-11-01)
+
+
+
 <a name="0.2.2"></a>
 ## [0.2.2](https://github.com/JimLiu/bbcode-to-react/compare/0.2.1...v0.2.2) (2016-11-01)
 Add tonic example
