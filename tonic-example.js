@@ -30,14 +30,14 @@ class BoldTag extends bbcode.Tag {
   }
 }
 
-// [youtube width="400"]https://www.youtube.com/watch?v=AB6RjNeDII0[/youtube]
+// [youtube width="400"]https://www.youtube.com/embed/AB6RjNeDII0[/youtube]
 bbcode.registerTag('youtube', YoutubeTag); // add new tag
 bbcode.registerTag('b', BoldTag); // replace exists tag
 */
 
 class MyComponent extends React.Component {
   render() {
-    return <p>{bbcode.toReact('[b]My Video: [/b][youtube width="400"]https://www.youtube.com/watch?v=AB6RjNeDII0[/youtube]')}</p>;
+    return <p>{bbcode.toReact('[b]My Video: [/b][youtube width="400"]https://www.youtube.com/embed/AB6RjNeDII0[/youtube]')}</p>;
   }
 }
 

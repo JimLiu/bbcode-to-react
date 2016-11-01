@@ -68,7 +68,7 @@ parser.registerTag('b', BoldTag); // replace exists tag
 
 const Example = (props) => {
   return (
-    <p>{parser.toReact('[youtube width="400"]https://www.youtube.com/watch?v=AB6RjNeDII0[/youtube]')}</p>
+    <p>{parser.toReact('[youtube width="400"]https://www.youtube.com/embed/AB6RjNeDII0[/youtube]')}</p>
   );
 }
 
