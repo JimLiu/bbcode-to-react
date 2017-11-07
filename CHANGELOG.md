@@ -1,7 +1,7 @@
 <a name="0.2.7"></a>
 ## [0.2.7](https://github.com/JimLiu/bbcode-to-react/compare/0.2.5...0.2.7) (2017-11-07)
 
-
+Fixed #3: Allow uppercase tags
 
 <a name="0.2.5"></a>
 ## [0.2.5](https://github.com/JimLiu/bbcode-to-react/compare/0.2.4...v0.2.5) (2016-11-01)
