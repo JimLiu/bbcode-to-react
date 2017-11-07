@@ -99,7 +99,7 @@ export default class Parser {
 
       if (token.match(TOKEN_RE)) {
         let params = this.parseParams(token.slice(1, -1));
-        let tagName = params[0][0];
+        let tagName = params[0][0].toLowerCase();
 
         if (current.CLOSED_BY.indexOf(tagName) > -1) {
           tokens.unshift(token);
