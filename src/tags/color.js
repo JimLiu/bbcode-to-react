@@ -1,31 +1,29 @@
-// https://github.com/vishnevskiy/bbcodejs/blob/master/src/coffee/tags.coffee
-import React from 'react';
-import Tag from '../tag';
+const React = require('react');
+
+const Tag = require('../tag');
 
 export default class ColorTag extends Tag {
-
-  toHTML() {
-    const color = this.params.color;
-
-    if (!color) {
-      return this.getContent();
+  toHtml() {
+    if (!this.selfClose && !this.isClosed) {
+      return this.outerText;
     }
 
-    return [`<span style="color:${color}">`, this.getContent(), '</span>'];
+    const color = this.attribute || 'black';
+
+    return `<div style="color:${color};">${this.getInnerHtml()}</div>`;
   }
 
   toReact() {
-    const color = this.params.color;
-
-    if (!color) {
-      return this.getComponents();
+    if (!this.selfClose && !this.isClosed) {
+      return this.outerText;
     }
 
+    const color = this.attribute || 'black';
+
     return (
-      <span style={{ color }}>
-        {this.getComponents()}
-      </span>
+      <div style={{ color }}>
+        {this.getReactChildren()}
+      </div>
     );
   }
 }
-

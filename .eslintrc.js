@@ -29,6 +29,9 @@ var rules = {
   'dot-notation': 0,
   'max-len': 0,
   'camelcase': 0,
+  'class-methods-use-this': 0,
+  'no-plusplus': 0,
+  'no-param-reassign': 0,
   'react/jsx-pascal-case': 0,
   'prefer-const': 0,
   'react/jsx-filename-extension': 0,
@@ -55,6 +58,5 @@ module.exports = {
     'ecmaFeatures': ecmaFeatures
   },
   'ecmaFeatures': ecmaFeatures,
-  rules: rules,
-  extensions: ['', '.js', '.jsx']
+  rules: rules
 };

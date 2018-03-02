@@ -1,33 +1,34 @@
-import React from 'react';
-import Tag from '../tag';
+const React = require('react');
 
-export default (name, attributes) => {
+const Tag = require('../tag');
+
+export default (name) => {
   class SimpleTag extends Tag {
-    constructor(renderer, settings = {}) {
-      super(renderer, settings);
-
-      Object.keys(attributes || {}).forEach(key => {
-        this[key] = attributes[key];
-      });
-    }
-
     toHTML() {
-      let htmlAttributes = this.renderer.htmlAttributes(this.params);
+      if (!this.selfClose && !this.isClosed) {
+        return this.outerText;
+      }
+
+      let htmlAttributes = this.renderAttributes();
 
       if (htmlAttributes) {
         htmlAttributes = ` ${htmlAttributes}`;
       }
 
-      return [`<${name}${htmlAttributes}>`, this.getContent(), `</${name}>`];
+      return `<${name}${htmlAttributes}>${this.getInnerHtml()}</${name}>`;
     }
 
     toReact() {
+      if (!this.selfClose && !this.isClosed) {
+        return this.outerText;
+      }
+
       const Name = name;
       return (
-        <Name {...this.params}>{this.getComponents()}</Name>
+        <Name {...this.attributes}>{this.getReactChildren()}</Name>
       );
     }
-
   }
+
   return SimpleTag;
 };

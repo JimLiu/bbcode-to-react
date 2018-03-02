@@ -1,46 +1,60 @@
-import Tag from '../tag';
+import TextTag from './text';
+import UrlTag from './url';
 import CodeTag from './code';
-import ImageTag from './image';
-import HorizontalRuleTag from './hr';
-import SizeTag from './size';
-import CenterTag from './center';
-import RightTag from './right';
-import ColorTag from './color';
-import ListTag from './list';
-import ListItemTag from './item';
+import ImgTag from './img';
+import HRTag from './hr';
 import QuoteTag from './quote';
-import LinkTag from './link';
+import ColorTag from './color';
+import SizeTag from './size';
+import alignTag from './align';
 import createSimpleTag from './simple';
 
-export default {
+const CenterTag = alignTag('center');
+const LeftTag = alignTag('left');
+const RightTag = alignTag('right');
+
+const defaultTags = {
   b: createSimpleTag('strong'),
+  strong: createSimpleTag('strong'),
   i: createSimpleTag('em'),
   u: createSimpleTag('u'),
   s: createSimpleTag('strike'),
-  h1: createSimpleTag('h1', { STRIP_OUTER: true }),
-  h2: createSimpleTag('h2', { STRIP_OUTER: true }),
-  h3: createSimpleTag('h3', { STRIP_OUTER: true }),
-  h4: createSimpleTag('h4', { STRIP_OUTER: true }),
-  h5: createSimpleTag('h5', { STRIP_OUTER: true }),
-  h6: createSimpleTag('h6', { STRIP_OUTER: true }),
+  h1: createSimpleTag('h1'),
+  h2: createSimpleTag('h2'),
+  h3: createSimpleTag('h3'),
+  h4: createSimpleTag('h4'),
+  h5: createSimpleTag('h5'),
+  h6: createSimpleTag('h6'),
   pre: createSimpleTag('pre'),
-  table: createSimpleTag('table', { DISCARD_TEXT: true }),
-  thead: createSimpleTag('thead', { DISCARD_TEXT: true }),
-  tbody: createSimpleTag('tbody', { DISCARD_TEXT: true }),
-  tr: createSimpleTag('tr', { DISCARD_TEXT: true }),
+  table: createSimpleTag('table'),
+  thead: createSimpleTag('thead'),
+  tbody: createSimpleTag('tbody'),
+  tr: createSimpleTag('tr'),
   th: createSimpleTag('th'),
   td: createSimpleTag('td'),
   code: CodeTag,
-  img: ImageTag,
-  hr: HorizontalRuleTag,
+  img: ImgTag,
+  hr: HRTag,
   size: SizeTag,
   center: CenterTag,
+  left: LeftTag,
   right: RightTag,
   color: ColorTag,
-  list: ListTag,
-  '*': ListItemTag,
   quote: QuoteTag,
-  url: LinkTag,
-  link: LinkTag,
-  email: LinkTag,
+  url: UrlTag,
+  link: UrlTag,
+  email: UrlTag,
+};
+
+
+module.exports = {
+  TextTag,
+  LeftTag,
+  CenterTag,
+  RightTag,
+  UrlTag,
+
+  createSimpleTag,
+
+  defaultTags,
 };

@@ -1,45 +1,39 @@
-// https://github.com/vishnevskiy/bbcodejs/blob/master/src/coffee/tags.coffee
 import React from 'react';
 import Tag from '../tag';
 
 export default class CodeTag extends Tag {
-  constructor(renderer, settings = {}) {
-    super(renderer, settings);
-
-    this.STRIP_INNER = true;
-    this.inline = this.params.code === 'inline';
-
-    if (!this.inline) {
-      this.STRIP_OUTER = true;
-    }
-  }
-
   toHTML() {
-    if (this.inline) {
-      return ['<code>', this.getContent(true), '</code>'];
+    if (!this.selfClose && !this.isClosed) {
+      return this.outerText;
     }
-    const lang = this.params.lang || this.params[this.name];
-    if (lang) {
-      return [`<pre class=\"prettyprint lang-${lang}\">`, this.getContent(true), '</pre>'];
+
+    if (this.attributes.inline) {
+      return `<code>${this.getInnerHtml()}</code>`;
     }
-    return ['<pre>', this.getContent(true), '</pre>'];
+
+    const lang = this.attributes.lang || this.attributes[this.name];
+    let className = lang ? `prettyprint lang-${lang}` : 'prettyprint';
+
+    return `<pre class="${className}">${this.getInnerHtml()}</pre>`;
   }
 
   toReact() {
-    if (this.inline) {
+    if (!this.selfClose && !this.isClosed) {
+      return this.outerText;
+    }
+
+    if (this.attributes.inline) {
       return (
-        <code>{this.getContent(true)}</code>
+        <code>{this.getReactChildren()}</code>
       );
     }
-    const lang = this.params.lang || this.params[this.name];
+    const lang = this.attributes.lang || this.attributes[this.name];
 
-    let className = 'prettyprint';
-    if (lang) {
-      className += ` lang-${lang}`;
-    }
+    let className = lang ? `prettyprint lang-${lang}` : 'prettyprint';
+
     return (
       <pre className={className}>
-        {this.getContent(true)}
+        {this.getReactChildren()}
       </pre>
     );
   }

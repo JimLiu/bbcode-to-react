@@ -1,153 +1,195 @@
-// https://github.com/vishnevskiy/bbcodejs/blob/master/src/coffee/parser.coffee
-import React from 'react';
-import { SPACE_RE, TOKEN_RE, START_NEWLINE_RE } from './constants';
-import defaultTags from './tags';
-import Tag from './tag';
-import Renderer from './renderer';
+const WHITESPACE_CHARS = [' ', '\r', '\n', '\t'];
+// for ReadStartTag and ReadAttributeName
+const SPECIAL_CHARS1 = [' ', '\r', '\n', '\t', '/', ']', '='];
+// for ReadEndTag and ReadAttributeValue
+const SPECIAL_CHARS2 = [' ', '\r', '\n', '\t', ']'];
 
-export default class Parser {
-  constructor(allowedTags = null) {
-    this.tags = {};
+// \r\n\t/]=
 
-    if (!allowedTags) {
-      this.tags = defaultTags;
-    } else {
-      allowedTags.forEach(name => {
-        if (defaultTags[name]) {
-          this.tags[name] = defaultTags[name];
-        }
-      });
+const ParseStatus = {
+  ReadText: 0,
+  ReadEndTag: 1,
+  ReadStartTag: 2,
+  ReadAttributeName: 3,
+  ReadAttributeValue: 4
+};
+
+
+function getTokens(input) {
+  const tokens = [];
+  let i = 0;
+  let status = ParseStatus.ReadText;
+
+  // skip white spaces
+  const skipWhiteSpaces = () => {
+    while (i < input.length
+      && WHITESPACE_CHARS.includes(input[i])) {
+      i++;
     }
+  };
 
-    this.renderer = new Renderer();
-  }
-
-  registerTag(name, tag) {
-    this.tags[name] = tag;
-  }
-
-  parseParams(token) {
-    const params = [];
-
-    function addParam(name, value) {
-      if (name) {
-        const n = name.trim();
-        // ignore on* events attribute
-        if (n.length && n.toLowerCase().indexOf('on') !== 0) {
-          params.push([n, value]);
-        }
-      }
+  // add tag name or attribute name or attribute value
+  const addNameOrValue = (specialChars) => {
+    const start = i;
+    while (i < input.length
+      && !specialChars.includes(input[i])) {
+      i++;
     }
+    tokens.push(input.substr(start, i - start));
+  };
 
-    if (token) {
-      let key = [];
-      let target = key;
-      let value = [];
-      let terminate = ' ';
-      let skipNext = false;
 
-      Array.from(token).forEach(c => {
-        if (skipNext) {
-          skipNext = false;
-        } else if (target === key && c === '=') {
-          target = value;
-        } else if (target === key && c === ':') {
-          target = value;
-        } else if (!value.length && c === '"') {
-          terminate = c;
-        } else if (c !== terminate) {
-          target.push(c);
-        } else {
-          addParam(key.join(''), value.join(''));
-
-          if (!SPACE_RE.test(terminate)) {
-            skipNext = true;
-          }
-
-          target = key = [];
-          value = [];
-          terminate = ' ';
-        }
-      });
-
-      addParam(key.join(''), value.join(''));
-    }
-
-    return params;
-  }
-
-  createTextNode(parent, text) {
-    const ref = parent.children.slice(-1)[0];
-    //console.log('ref', ref, text)
-    if (ref != null && ref.STRIP_OUTER) {
-      text = text.replace(START_NEWLINE_RE, '');
-    }
-
-    return new Tag(this.renderer, { text, parent });
-  }
-
-  parse(input) {
-    const root = new Tag(this.renderer);
-    const tokens = input.split(TOKEN_RE);
-    let current = root;
-    let token = null;
-    while (tokens.length) {
-      token = tokens.shift();
-      if (!token.length) {
-        continue;
+  while (i < input.length) {
+    if (status === ParseStatus.ReadText) {
+      // find next '['
+      let nextIndex = input.indexOf('[', i);
+      // not found
+      if (nextIndex === -1) {
+        tokens.push(input.substr(i));
+        break;
       }
 
-      if (token.match(TOKEN_RE)) {
-        let params = this.parseParams(token.slice(1, -1));
-        let tagName = params[0][0].toLowerCase();
+      // if found a '[', then try to find it's ']'
+      const nextNextEndtagIndex = input.indexOf(']', nextIndex);
+      // not found the endtag ']'
+      if (nextNextEndtagIndex === -1) {
+        tokens.push(input.substr(i));
+        break;
+      }
 
-        if (current.CLOSED_BY.indexOf(tagName) > -1) {
-          tokens.unshift(token);
-          tagName = `/${current.name}`;
-          params = [];
+      // find next begin tag '['
+      let nextNextBegintagIndex = input.indexOf('[', nextIndex + 1);
+
+      // if the next begin tag is before the next end tag
+      // e.g. '[tab [ [tag ]'
+      if (nextNextBegintagIndex !== -1 &&
+        nextNextBegintagIndex < nextNextEndtagIndex) {
+        // find the last one
+        while (nextNextBegintagIndex !== -1 &&
+          nextNextBegintagIndex < nextNextEndtagIndex) {
+          nextIndex = nextNextBegintagIndex;
+          nextNextBegintagIndex = input.indexOf('[', nextIndex + 1);
         }
 
-        if (tagName[0] === '/') {
-          tagName = tagName.slice(1);
-          if (!this.tags[tagName]) {
-            this.createTextNode(current, token);
-            continue;
-          }
-
-          if (current.name === tagName) {
-            current = current.parent;
-          }
-        } else {
-          const cls = this.tags[tagName];
-          if (!cls) {
-            this.createTextNode(current, token);
-            continue;
-          }
-
-          const tag = new cls(this.renderer, {
-            name: tagName,
-            parent: current,
-            params,
-          });
-
-          if (!tag.SELF_CLOSE && (tag.CLOSED_BY.indexOf(tagName) < 0 || current.name !== tagName)) {
-            current = tag;
-          }
-        }
+        tokens.push(input.substr(i, nextIndex - i));
+        i = nextIndex;
+      } else if (i < input.length - 2 // it's '[/'
+          && input[i] === '[' && input[i + 1] === '/'
+      ) {
+        i += 2;
+        tokens.push('[/');
+        status = ParseStatus.ReadEndTag;
+      } else if (input[i] === '[') { // it's '['
+        i++;
+        tokens.push('[');
+        status = ParseStatus.ReadStartTag;
       } else {
-        this.createTextNode(current, token);
+        tokens.push(input.substr(i, nextIndex - i));
+        i = nextIndex;
+      }
+    } else if (status === ParseStatus.ReadStartTag) {
+      // skip white spaces
+      skipWhiteSpaces();
+
+      // add tagname
+      addNameOrValue(SPECIAL_CHARS1);
+
+      // skip white spaces
+      skipWhiteSpaces();
+
+      if (i < input.length - 1
+        && input[i] === '/' && input[i + 1] === ']') {
+        tokens.push('/]');
+        status = ParseStatus.ReadText;
+        i += 2;
+      } else if (i < input.length && input[i] === ']') {
+        tokens.push(']');
+        status = ParseStatus.ReadText;
+        i++;
+      } else {
+        status = ParseStatus.ReadAttributeName;
+      }
+    } else if (status === ParseStatus.ReadEndTag) {
+      // skip white spaces
+      skipWhiteSpaces();
+
+      // add tagname
+      addNameOrValue(SPECIAL_CHARS2);
+
+      // skip white spaces
+      skipWhiteSpaces();
+
+      if (i < input.length && input[i] === ']') {
+        tokens.push(']');
+        status = ParseStatus.ReadText;
+        i++;
+      }
+    } else if (status === ParseStatus.ReadAttributeName) {
+      // skip white spaces
+      skipWhiteSpaces();
+
+      // add attribute name
+      addNameOrValue(SPECIAL_CHARS1);
+
+      // skip white spaces
+      skipWhiteSpaces();
+
+      if (i < input.length - 1
+        && input[i] === '/' && input[i + 1] === ']') {
+        tokens.push('/]');
+        status = ParseStatus.ReadText;
+        i += 2;
+      } else if (i < input.length && input[i] === ']') {
+        tokens.push(']');
+        status = ParseStatus.ReadText;
+        i++;
+      } else if (i < input.length && input[i] === '=') {
+        tokens.push('=');
+        i++;
+        status = ParseStatus.ReadAttributeValue;
+      } else if (i < input.length && input[i] === '/') {
+        i++;
+      }
+    } else if (status === ParseStatus.ReadAttributeValue) {
+      // skip white spaces
+      skipWhiteSpaces();
+
+      if (i < input.length && (input[i] === '\'' || input[i] === '"')) {
+        const valueStart = i;
+        const quotation = input[i];
+        i++;
+        while (i < input.length && input[i] !== quotation) {
+          i++;
+        }
+        if (i < input.length && input[i] === quotation) {
+          i++;
+        }
+        tokens.push(input.substr(valueStart + 1, i - valueStart - 2));
+        status = ParseStatus.ReadAttributeName;
+      } else {
+        addNameOrValue(SPECIAL_CHARS2);
+        // skip white spaces
+        skipWhiteSpaces();
+
+        status = ParseStatus.ReadAttributeName;
+      }
+
+      if (i < input.length - 1
+        && input[i] === '/' && input[i + 1] === ']') {
+        tokens.push('/]');
+        status = ParseStatus.ReadText;
+        i += 2;
+      } else if (i < input.length && input[i] === ']') {
+        tokens.push(']');
+        i++;
+        status = ParseStatus.ReadText;
       }
     }
-
-    return root;
   }
-
-  toHTML(input) {
-    return this.parse(input).toHTML();
-  }
-
-  toReact(input) {
-    return this.parse(input).toReact();
-  }
+  return tokens;
 }
 
+
+module.exports = {
+  getTokens,
+};

@@ -3,25 +3,33 @@ import React from 'react';
 import Tag from '../tag';
 
 export default class SizeTag extends Tag {
-
   toHTML() {
-    const size = this.params.size;
+    if (!this.selfClose && !this.isClosed) {
+      return this.outerText;
+    }
+
+    const size = parseInt(this.attributes.size, 10);
 
     if (isNaN(size)) {
-      return this.getContent();
+      return this.getInnerHtml();
     }
-    return [`<span style="font-size:${size}px">`, this.getContent(), '</span>'];
+
+    return `<span style="font-size:${size}px">${this.getInnerHtml()}</span>`;
   }
 
   toReact() {
-    const size = this.params.size;
+    if (!this.selfClose && !this.isClosed) {
+      return this.outerText;
+    }
+
+    const size = parseInt(this.attributes.size, 10);
 
     if (isNaN(size)) {
-      return this.getComponents();
+      return this.getReactChildren();
     }
 
     return (
-      <span style={{ fontSize: `${size}px` }}>{this.getComponents()}</span>
+      <span style={{ fontSize: `${size}px` }}>{this.getReactChildren()}</span>
     );
   }
 }
