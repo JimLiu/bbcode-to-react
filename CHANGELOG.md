@@ -1,3 +1,13 @@
+<a name="0.2.8"></a>
+## [0.2.8](https://github.com/JimLiu/bbcode-to-react/compare/0.2.7...0.2.8) (2018-03-02)
+
+
+### Bug Fixes
+
+* change build target ([5842d44](https://github.com/JimLiu/bbcode-to-react/commit/5842d44))
+
+
+
 <a name="0.2.7"></a>
 ## [0.2.7](https://github.com/JimLiu/bbcode-to-react/compare/0.2.5...0.2.7) (2017-11-07)
 
