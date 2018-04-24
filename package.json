@@ -1,6 +1,6 @@
 {
   "name": "bbcode-to-react",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "A utility for turning raw BBCode into React elements. ",
   "main": "lib/index.js",
   "scripts": {
@@ -10,8 +10,8 @@
     "start": "npm run build",
     "build": "cross-env WEBPACK_BUILD=production webpack --progress --colors && webpack --progress --colors",
     "prebuild": "babel src --out-dir lib --ignore src/__tests__/",
-    "create-release": "npm test && sh ./scripts/release",
-    "publish-release": "npm test && sh ./scripts/publish",
+    "create-release": "sh ./scripts/release",
+    "publish-release": "sh ./scripts/publish",
     "lint": "eslint src"
   },
   "repository": {
@@ -42,7 +42,7 @@
   "homepage": "https://github.com/JimLiu/bbcode-to-react#readme",
   "dependencies": {},
   "peerDependencies": {
-    "react": "^0.14.0 || ^15.0.0"
+    "react": "^0.14.0 || ^15.0.0 || ^16.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.14.0",
