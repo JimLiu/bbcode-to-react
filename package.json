@@ -1,6 +1,6 @@
 {
   "name": "bbcode-to-react",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "A utility for turning raw BBCode into React elements. ",
   "main": "lib/index.js",
   "scripts": {
@@ -42,7 +42,7 @@
   "homepage": "https://github.com/JimLiu/bbcode-to-react#readme",
   "dependencies": {},
   "peerDependencies": {
-    "react": "^0.14.0 || ^15.0.0"
+    "react": "^0.14.0 || ^15.0.0 || ^16.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.14.0",
