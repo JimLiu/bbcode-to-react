@@ -25,7 +25,10 @@ export default class Renderer {
 
   escape(value) {
     // Escapes a string so it is valid within XML or XHTML
-    return value.replace(ESCAPE_RE, (match) => ESCAPE_DICT[match]);
+    //return value.replace(ESCAPE_RE, (match) => ESCAPE_DICT[match]);
+
+    // disable escape
+    return value;
   }
 
   linkify(value) {
